@@ -118,6 +118,16 @@ When is my next event?
 ```
 
 ---
+## 📄 License
+
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+You are free to view, use, modify, and share this project for non-commercial purposes, provided that appropriate credit is given.
+
+Commercial use of this project is not permitted without explicit permission from the author.
+
+For full license details, see the LICENSE file or visit:
+https://creativecommons.org/licenses/by-nc/4.0/
 
 ## 🎯 Project Goal
 
