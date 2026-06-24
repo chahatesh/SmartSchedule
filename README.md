@@ -4,6 +4,8 @@ Smart Schedule AI is an intelligent calendar platform that makes scheduling easi
 
 Alongside the web application, Smart Schedule AI includes dedicated hardware devices that display upcoming events at a glance, helping users stay organized throughout the day.
 
+Disclamer -- The API key for groq is not correct becouse I dont want people abusing the key if you want your own you can get one for free on console.groq.com/keys but the website it works -https://smartschedule.wasmer.app/
+
 ---
 
 ## ✨ Features
