@@ -3,228 +3,260 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>SmartSchedule AI</title>
+<title>SmartSchedule</title>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#08090f;--s1:#0e1117;--s2:#151c28;--s3:#1c2438;--s4:#242e42;
-  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.11);
-  --text:#dde3f0;--muted:#5a6a85;--muted2:#8899b4;
-  --v:#7c5cfc;--v2:#6441f5;--vd:rgba(124,92,252,0.13);
-  --cyan:#14c8d4;--green:#10c47a;--red:#f0454a;--amber:#f5a623;
+  --bg:#ffffff;--bg2:#f8fafc;--bg3:#eef1f5;
+  --ink:#1e293b;--ink2:#5b6779;--ink3:#94a3b8;
+  --line:#e5e7eb;--line2:#d7dbe1;
+  --blue:#4c86e8;--blue-dim:#e9f1ff;
+  --teal:#159e91;--teal-dim:#e3f7f4;
+  --amber:#f2a91f;--amber-dim:#fdf3dc;
+  --red:#e14b4f;--red-dim:#fcebec;
 }
 html,body{height:100%;overflow:hidden}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
-  background-image:radial-gradient(ellipse 80% 50% at 15% 40%,rgba(100,65,245,0.06),transparent),
-                   radial-gradient(ellipse 60% 40% at 85% 15%,rgba(20,200,212,0.04),transparent)}
-::-webkit-scrollbar{width:4px;height:4px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg2);color:var(--ink)}
+::-webkit-scrollbar{width:7px;height:7px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
 
 /* ── AUTH ── */
-#auth{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:var(--bg)}
-.auth-card{background:var(--s2);border:1px solid var(--border2);border-radius:22px;padding:32px 28px;width:370px;box-shadow:0 24px 64px rgba(0,0,0,0.45)}
-.auth-brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px}
-.brand-gem{width:38px;height:38px;background:linear-gradient(135deg,var(--v),var(--cyan));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 16px rgba(124,92,252,0.35)}
-.brand-name{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
-.auth-tabs{display:flex;background:var(--s3);border-radius:11px;padding:3px;margin-bottom:22px;gap:3px}
-.atab{flex:1;padding:8px;text-align:center;border-radius:9px;cursor:pointer;font-size:.82rem;font-weight:500;color:var(--muted2);transition:all .18s}
-.atab.on{background:var(--v2);color:#fff}
-label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px}
-.inp{width:100%;background:var(--s3);border:1px solid var(--border2);border-radius:10px;padding:10px 13px;color:var(--text);font-size:.875rem;outline:none;transition:border-color .18s;font-family:inherit}
-.inp:focus{border-color:var(--v)}
-.inp::placeholder{color:var(--muted)}
-.field{margin-bottom:13px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:500;cursor:pointer;border:none;transition:all .18s;font-family:inherit;white-space:nowrap}
-.btn-v{background:var(--v2);color:#fff;box-shadow:0 2px 12px rgba(100,65,245,0.28)}
-.btn-v:hover{background:var(--v);transform:translateY(-1px)}
-.btn-v:active{transform:scale(.98)}
-.btn-v:disabled{opacity:.45;cursor:not-allowed;transform:none}
+#auth{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:var(--bg2)}
+.auth-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:30px 26px;width:360px;box-shadow:0 10px 30px rgba(30,41,59,0.08)}
+.auth-brand{display:flex;align-items:center;gap:9px;margin-bottom:20px}
+.brand-gem{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:700}
+.brand-name{font-size:1.05rem;font-weight:700}
+.auth-tabs{display:flex;background:var(--bg3);border-radius:9px;padding:3px;margin-bottom:20px;gap:3px}
+.atab{flex:1;padding:8px;text-align:center;border-radius:7px;cursor:pointer;font-size:.82rem;font-weight:500;color:var(--ink2)}
+.atab.on{background:var(--ink);color:#fff}
+label.lbl{display:block;font-size:.72rem;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.inp{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:7px;padding:9px 12px;color:var(--ink);font-size:.875rem;outline:none;font-family:inherit}
+.inp:focus{border-color:var(--blue)}
+.inp::placeholder{color:var(--ink3)}
+.field{margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit}
+.btn-v{background:var(--ink);color:#fff}
+.btn-v:hover{background:#111827}
+.btn-v:disabled{opacity:.45;cursor:not-allowed}
 .btn-full{width:100%}
-.btn-ghost{background:var(--s3);color:var(--muted2);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
-.btn-danger{background:rgba(240,69,74,.12);color:#f87171;border:1px solid rgba(240,69,74,.25)}
-.btn-danger:hover{background:rgba(240,69,74,.2)}
-.btn-cyan{background:rgba(20,200,212,.13);color:#22d3ee;border:1px solid rgba(20,200,212,.3)}
-.btn-cyan:hover{background:rgba(20,200,212,.22)}
+.btn-ghost{background:transparent;color:var(--ink2);border-color:var(--line2)}
+.btn-ghost:hover{color:var(--ink);background:var(--bg2)}
+.btn-danger{background:var(--red-dim);color:#a02a2e;border-color:#f2c6c8}
+.btn-danger:hover{background:#f9dbdc}
+.btn-cyan{background:var(--teal-dim);color:#0d6b62;border-color:#b9e7e1}
+.btn-cyan:hover{background:#d3f0eb}
 .btn-cyan:disabled{opacity:.45;cursor:not-allowed}
-.err{background:rgba(240,69,74,.1);border:1px solid rgba(240,69,74,.28);color:#f87171;border-radius:10px;padding:10px 13px;font-size:.82rem;margin-bottom:14px}
+.err{background:var(--red-dim);border:1px solid #f2c6c8;color:#a02a2e;border-radius:8px;padding:9px 12px;font-size:.8rem;margin-bottom:13px}
 
 /* ── APP SHELL ── */
 #app{display:none;height:100vh;overflow:hidden}
 .shell{display:flex;height:100vh}
-.sidebar{width:216px;background:rgba(14,17,23,0.97);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.sb-logo{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid var(--border)}
-.sb-gem{width:30px;height:30px;background:linear-gradient(135deg,var(--v),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.sb-name{font-size:.9rem;font-weight:700;letter-spacing:-.015em}
-.sb-nav{flex:1;padding:10px 8px}
-.ni{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;cursor:pointer;color:var(--muted2);font-size:.83rem;font-weight:500;transition:all .18s;margin-bottom:1px;user-select:none}
-.ni:hover{background:rgba(255,255,255,0.04);color:var(--text)}
-.ni.on{background:var(--vd);color:#a78bfa;border:1px solid rgba(124,92,252,0.18)}
-.ni svg{width:17px;height:17px;flex-shrink:0;opacity:.85}
-.sb-foot{padding:10px 8px;border-top:1px solid var(--border)}
-.sb-user{display:flex;align-items:center;gap:9px;padding:8px 10px;margin-bottom:3px}
-.ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--v),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.sidebar{width:206px;background:var(--bg);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{display:flex;align-items:center;gap:9px;padding:17px 16px}
+.sb-gem{width:28px;height:28px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+.sb-name{font-size:.9rem;font-weight:700}
+.sb-nav{flex:1;padding:6px 10px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;cursor:pointer;color:var(--ink2);font-size:.83rem;font-weight:500;margin-bottom:1px;user-select:none}
+.ni:hover{background:var(--bg2);color:var(--ink)}
+.ni.on{background:var(--blue-dim);color:var(--blue)}
+.ni svg{width:16px;height:16px;flex-shrink:0;opacity:.85}
+.sb-foot{padding:10px;border-top:1px solid var(--line)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:7px 8px;margin-bottom:2px}
+.ava{width:28px;height:28px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0}
 .sb-uname{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-email{font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.logout{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:pointer;color:#f87171;font-size:.78rem;font-weight:500;transition:all .18s}
-.logout:hover{background:rgba(240,69,74,0.07)}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.sb-email{font-size:.68rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logout{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:8px;cursor:pointer;color:#a02a2e;font-size:.78rem;font-weight:500}
+.logout:hover{background:var(--red-dim)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg)}
 .page{display:none;flex:1;overflow-y:auto;flex-direction:column}
 .page.on{display:flex}
-.ph{display:flex;align-items:flex-start;justify-content:space-between;padding:26px 28px 0;flex-shrink:0}
-.ptitle{font-size:1.3rem;font-weight:700;letter-spacing:-.025em}
-.psub{font-size:.8rem;color:var(--muted);margin-top:3px}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;padding:24px 26px 0;flex-shrink:0}
+.ptitle{font-size:1.25rem;font-weight:700}
+.psub{font-size:.8rem;color:var(--ink2);margin-top:3px}
 
 /* ── DASHBOARD ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;padding:20px 28px 0;flex-shrink:0}
-.met{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
-.met::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(124,92,252,0.3),transparent)}
-.met-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px}
-.met-v{font-size:1.5rem;font-weight:700}
-.met-l{font-size:.7rem;color:var(--muted);margin-top:1px}
-.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 28px 28px;flex:1;min-height:0}
-.card{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:18px;overflow:hidden;display:flex;flex-direction:column}
-.card-title{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:13px;flex-shrink:0}
+.next-card{margin:18px 26px 0;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:15px 18px;display:flex;align-items:center;gap:14px}
+.next-tag{font-size:.68rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.next-title{font-size:.98rem;font-weight:700;margin-top:2px}
+.next-meta{font-size:.8rem;color:var(--ink2);margin-top:2px}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 26px 0}
+.met{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px}
+.met-v{font-size:1.4rem;font-weight:700}
+.met-l{font-size:.7rem;color:var(--ink2);margin-top:2px}
+
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 26px 26px;flex:1;min-height:0}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:hidden;display:flex;flex-direction:column}
+.card-title{font-size:.74rem;font-weight:600;color:var(--ink2);margin-bottom:10px;flex-shrink:0}
 .ev-list{flex:1;overflow-y:auto}
-.ev-row{display:flex;align-items:flex-start;gap:10px;padding:8px 6px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;border-radius:6px}
-.ev-row:hover{background:rgba(255,255,255,0.03)}
+.ev-row{display:flex;align-items:flex-start;gap:10px;padding:8px 4px;border-bottom:1px solid var(--bg3);cursor:pointer}
+.ev-row:hover{background:var(--bg2)}
 .ev-row:last-child{border-bottom:none}
 .ev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .ev-name{font-size:.84rem;font-weight:500;line-height:1.3}
-.ev-meta{font-size:.72rem;color:var(--muted);margin-top:2px}
-.empty{text-align:center;padding:28px 16px;color:var(--muted);font-size:.82rem}
-.empty-ic{font-size:1.8rem;margin-bottom:8px;opacity:.25}
+.ev-meta{font-size:.72rem;color:var(--ink3);margin-top:2px}
+.badge{font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:5px;text-transform:capitalize;flex-shrink:0}
+.bh{background:var(--red-dim);color:#a02a2e}
+.bl{background:var(--teal-dim);color:#0d6b62}
+.bm{background:var(--blue-dim);color:var(--blue)}
+.empty{text-align:center;padding:26px 16px;color:var(--ink3);font-size:.82rem}
+.empty-ic{font-size:1.7rem;margin-bottom:8px;opacity:.3}
 
 /* ── CALENDAR ── */
 #cal-page.on{overflow:hidden}
-.cal-body{flex:1;padding:16px 28px 24px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-.cal-card{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:14px;flex:1;overflow:hidden;min-height:400px}
-.fc{--fc-border-color:rgba(255,255,255,0.05);--fc-page-bg-color:transparent;--fc-today-bg-color:rgba(124,92,252,0.07);--fc-event-bg-color:#6441f5;--fc-event-border-color:#7c5cfc;--fc-event-text-color:#fff;--fc-button-bg-color:var(--s3);--fc-button-border-color:var(--border2);--fc-button-text-color:var(--muted2);--fc-button-hover-bg-color:var(--vd);--fc-button-hover-border-color:rgba(124,92,252,0.35);--fc-button-active-bg-color:rgba(124,92,252,0.25);font-family:'Inter',sans-serif}
-.fc th{color:var(--muted);font-size:.68rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;border-color:var(--border)}
-.fc td{border-color:rgba(255,255,255,0.04)}
-.fc .fc-toolbar-title{color:var(--text);font-size:.95rem;font-weight:600}
-.fc .fc-button{border-radius:8px;font-size:.76rem;font-weight:500;padding:5px 11px}
-.fc .fc-daygrid-day-number{color:var(--muted2);font-size:.76rem;padding:5px}
-.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{background:var(--v2);color:#fff;border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:3px}
-.fc-event{border-radius:5px;font-size:.7rem;font-weight:500;cursor:pointer;transition:transform .12s,box-shadow .12s}
-.fc-event:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(100,65,245,0.35)}
-.fc .fc-scrollgrid{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.fc-popover{background:var(--s2)!important;border:1px solid var(--border2)!important;border-radius:12px!important;box-shadow:0 16px 40px rgba(0,0,0,.45)!important}
-.fc-popover-header{background:var(--s3)!important;border-radius:12px 12px 0 0!important;color:var(--text)!important}
+.cal-body{flex:1;padding:16px 26px 24px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.cal-card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;flex:1;overflow:hidden;min-height:400px}
+.fc{--fc-border-color:var(--bg3);--fc-page-bg-color:transparent;--fc-today-bg-color:var(--blue-dim);--fc-event-bg-color:var(--blue);--fc-event-border-color:var(--blue);--fc-event-text-color:#fff;--fc-button-bg-color:var(--bg2);--fc-button-border-color:var(--line2);--fc-button-text-color:var(--ink2);--fc-button-hover-bg-color:var(--bg3);--fc-button-hover-border-color:var(--line2);--fc-button-active-bg-color:var(--ink);font-family:'Inter',sans-serif}
+.fc th{color:var(--ink3);font-size:.68rem;font-weight:600;text-transform:uppercase;border-color:var(--line)}
+.fc td{border-color:var(--bg3)}
+.fc .fc-toolbar-title{color:var(--ink);font-size:.95rem;font-weight:700}
+.fc .fc-button{border-radius:7px;font-size:.76rem;font-weight:500;padding:5px 11px}
+.fc .fc-daygrid-day-number{color:var(--ink2);font-size:.76rem;padding:5px}
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{background:var(--amber);color:#fff;border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:3px}
+.fc-event{border-radius:5px;font-size:.7rem;font-weight:500;cursor:pointer}
+.fc .fc-scrollgrid{border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.fc-popover{background:var(--bg)!important;border:1px solid var(--line2)!important;border-radius:10px!important;box-shadow:0 12px 30px rgba(0,0,0,.12)!important}
+.fc-popover-header{background:var(--bg2)!important;border-radius:10px 10px 0 0!important;color:var(--ink)!important}
 
 /* ── AI CHAT ── */
 #ai-page.on{overflow:hidden}
 .chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden}
-.chat-hd{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.chat-hd-left{display:flex;align-items:center;gap:12px}
-.ai-ava{width:34px;height:34px;border-radius:11px;background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.ai-status{font-size:.68rem;color:var(--green);display:flex;align-items:center;gap:5px;margin-top:2px}
-.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
-.chat-msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
-.msg{display:flex;gap:10px;animation:fadeUp .22s ease-out}
+.chat-hd{padding:15px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-hd-left{display:flex;align-items:center;gap:11px}
+.ai-ava{width:32px;height:32px;border-radius:8px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-status{font-size:.7rem;color:var(--ink2);display:flex;align-items:center;gap:5px;margin-top:2px}
+.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);display:inline-block}
+.chat-msgs{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:13px}
+.msg{display:flex;gap:9px}
 .msg.user-msg{flex-direction:row-reverse}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.msg-ava{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;align-self:flex-end}
-.msg-ava.ai{background:rgba(124,92,252,.14);border:1px solid rgba(124,92,252,.25)}
-.msg-ava.user{background:var(--v2)}
-.msg-body{display:flex;flex-direction:column;max-width:580px}
+.msg-ava{width:27px;height:27px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;align-self:flex-end}
+.msg-ava.ai{background:var(--bg3)}
+.msg-ava.user{background:var(--ink)}
+.msg-body{display:flex;flex-direction:column;max-width:560px}
 .user-msg .msg-body{align-items:flex-end}
-.bubble{padding:11px 15px;border-radius:16px;font-size:.855rem;line-height:1.65;word-break:break-word;white-space:pre-wrap}
-.bubble.ai{background:var(--s2);border:1px solid var(--border2);color:var(--text);border-radius:16px 16px 16px 4px}
-.bubble.user{background:var(--v2);color:#fff;border-radius:16px 16px 4px 16px}
-.bubble.clarify{background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.25);border-radius:16px 16px 16px 4px}
-.msg-time{font-size:.65rem;color:var(--muted);margin-top:4px;padding:0 3px}
-.ev-confirm{margin-top:8px;background:rgba(16,196,122,.07);border:1px solid rgba(16,196,122,.2);border-radius:12px;padding:11px 14px}
-.ev-confirm-hd{display:flex;align-items:center;gap:7px;font-size:.76rem;font-weight:600;color:#34d399;margin-bottom:7px}
-.ev-chip{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.78rem;color:var(--muted2);border-bottom:1px solid rgba(255,255,255,.04)}
-.ev-chip:last-child{border-bottom:none;padding-bottom:0}
-.ev-chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--v);flex-shrink:0}
-.ev-chip-name{color:var(--text);font-weight:500}
+.bubble{padding:10px 14px;border-radius:12px;font-size:.855rem;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.bubble.ai{background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:3px 12px 12px 12px}
+.bubble.user{background:var(--blue);color:#fff;border-radius:12px 12px 3px 12px}
+.bubble.clarify{background:var(--amber-dim);border:1px solid #ecd398;border-radius:3px 12px 12px 12px}
+.msg-time{font-size:.64rem;color:var(--ink3);margin-top:3px;padding:0 3px}
+.ev-confirm{margin-top:8px;background:var(--teal-dim);border:1px solid #b9e7e1;border-radius:9px;padding:10px 13px}
+.ev-confirm-hd{font-size:.74rem;font-weight:600;color:#0d6b62;margin-bottom:6px}
+.ev-chip{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.78rem;color:var(--ink2)}
+.ev-chip-name{color:var(--ink);font-weight:600}
 .ev-chip-btns{display:flex;gap:5px;margin-left:auto;flex-shrink:0}
-.mini-btn{padding:3px 9px;border-radius:6px;font-size:.68rem;font-weight:500;cursor:pointer;border:1px solid;transition:all .15s;font-family:inherit}
-.mini-edit{background:rgba(124,92,252,.1);color:#a78bfa;border-color:rgba(124,92,252,.25)}
-.mini-edit:hover{background:rgba(124,92,252,.2)}
-.mini-del{background:rgba(240,69,74,.1);color:#f87171;border-color:rgba(240,69,74,.25)}
-.mini-del:hover{background:rgba(240,69,74,.2)}
-.clarify-opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.clarify-opt{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:500;cursor:pointer;background:var(--s3);border:1px solid var(--border2);color:var(--muted2);transition:all .18s;font-family:inherit}
-.clarify-opt:hover{border-color:rgba(124,92,252,.4);color:var(--v);background:var(--vd)}
-.typing-bub{display:flex;gap:4px;align-items:center;padding:13px 15px}
-.typing-bub span{width:5px;height:5px;border-radius:50%;background:var(--v);animation:td 1.2s infinite ease-in-out}
-.typing-bub span:nth-child(2){animation-delay:.2s}
-.typing-bub span:nth-child(3){animation-delay:.4s}
-@keyframes td{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
-.chat-inp-area{padding:14px 24px 18px;border-top:1px solid var(--border);flex-shrink:0}
-.voice-bar{display:none;align-items:center;gap:9px;background:rgba(240,69,74,.07);border:1px solid rgba(240,69,74,.22);border-radius:10px;padding:8px 13px;margin-bottom:9px;font-size:.78rem;color:#f87171}
+.mini-btn{padding:3px 8px;border-radius:6px;font-size:.68rem;font-weight:500;cursor:pointer;border:1px solid;font-family:inherit}
+.mini-edit{background:var(--blue-dim);color:var(--blue);border-color:#c7dcfa}
+.mini-del{background:var(--red-dim);color:#a02a2e;border-color:#f2c6c8}
+.clarify-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.clarify-opt{padding:6px 13px;border-radius:16px;font-size:.78rem;font-weight:500;cursor:pointer;background:var(--bg);border:1px solid #ecd398;color:#9a6b0c;font-family:inherit}
+.clarify-opt:hover{background:var(--amber);color:#fff}
+.typing-bub{display:flex;gap:4px;align-items:center;padding:12px 14px}
+.typing-bub span{width:5px;height:5px;border-radius:50%;background:var(--ink3)}
+.chat-inp-area{padding:13px 22px 17px;border-top:1px solid var(--line);flex-shrink:0}
+.voice-bar{display:none;align-items:center;gap:9px;background:var(--red-dim);border:1px solid #f2c6c8;border-radius:9px;padding:8px 12px;margin-bottom:9px;font-size:.78rem;color:#a02a2e}
 .voice-bar.on{display:flex}
-.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:rp 1s infinite}
-@keyframes rp{0%,100%{opacity:1}50%{opacity:.3}}
-.inp-row{display:flex;gap:9px;align-items:flex-end}
-.chat-ta{flex:1;background:var(--s2);border:1px solid var(--border2);border-radius:13px;padding:11px 15px;color:var(--text);font-size:.875rem;outline:none;resize:none;max-height:110px;min-height:44px;font-family:inherit;transition:border-color .18s;line-height:1.5}
-.chat-ta:focus{border-color:var(--v)}
-.chat-ta::placeholder{color:var(--muted)}
-.ib{width:42px;height:42px;border-radius:11px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0;font-size:16px}
-.ib-send{background:var(--v2);color:#fff;box-shadow:0 2px 10px rgba(100,65,245,.3)}
-.ib-send:hover{background:var(--v)}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
+.inp-row{display:flex;gap:8px;align-items:flex-end}
+.chat-ta{flex:1;background:var(--bg2);border:1px solid var(--line2);border-radius:11px;padding:10px 14px;color:var(--ink);font-size:.875rem;outline:none;resize:none;max-height:110px;min-height:42px;font-family:inherit;line-height:1.5}
+.chat-ta:focus{border-color:var(--blue)}
+.chat-ta::placeholder{color:var(--ink3)}
+.ib{width:40px;height:40px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.ib-send{background:var(--ink);color:#fff}
+.ib-send:hover{background:#111827}
 .ib-send:disabled{opacity:.35;cursor:not-allowed}
-.ib-mic{background:var(--s3);border:1px solid var(--border2);color:var(--muted2)}
-.ib-mic:hover{border-color:var(--v);color:var(--v)}
-.ib-mic.rec{background:rgba(240,69,74,.15);border-color:rgba(240,69,74,.45);color:var(--red)}
-.inp-hint{font-size:.67rem;color:var(--muted);text-align:center;margin-top:7px}
+.ib-mic{background:var(--bg2);border:1px solid var(--line2);color:var(--ink2)}
+.ib-mic:hover{border-color:var(--blue);color:var(--blue)}
+.ib-mic.rec{background:var(--red-dim);border-color:#f2c6c8;color:var(--red)}
+.inp-hint{font-size:.68rem;color:var(--ink3);text-align:center;margin-top:6px}
 .ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-.ex-p{text-align:left;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:9px;padding:9px 12px;cursor:pointer;font-size:.76rem;color:var(--muted2);transition:all .18s;font-family:inherit}
-.ex-p:hover{border-color:rgba(124,92,252,.35);color:var(--text);background:var(--vd)}
+.ex-p{text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;cursor:pointer;font-size:.76rem;color:var(--ink2);font-family:inherit}
+.ex-p:hover{border-color:var(--blue);color:var(--ink)}
 
 /* ── DEVICES PAGE ── */
-.dev-grid{display:grid;gap:12px;padding:20px 28px 28px}
-.dev-card{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:14px}
-.dev-icon{width:42px;height:42px;border-radius:12px;background:rgba(20,200,212,.1);border:1px solid rgba(20,200,212,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dev-grid{display:grid;gap:11px;padding:18px 26px 26px}
+.dev-card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;align-items:center;gap:13px}
+.dev-icon{width:38px;height:38px;border-radius:9px;background:var(--teal-dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .dev-info{flex:1;min-width:0}
 .dev-name{font-size:.9rem;font-weight:600}
-.dev-sub{font-size:.74rem;color:var(--muted);margin-top:3px}
+.dev-sub{font-size:.73rem;color:var(--ink3);margin-top:2px}
 .dev-status{display:flex;align-items:center;gap:5px;font-size:.72rem;margin-top:5px}
-.online-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
-.offline-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.online-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.offline-dot{width:6px;height:6px;border-radius:50%;background:var(--ink3)}
 .dev-btns{display:flex;gap:8px;flex-shrink:0}
-.pair-box{background:var(--s2);border:1px dashed var(--border2);border-radius:16px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
-.pair-box:hover{border-color:var(--v);background:var(--vd)}
-.pair-icon{font-size:2rem;margin-bottom:10px;opacity:.6}
+.pair-box{background:var(--bg);border:1px dashed var(--line2);border-radius:10px;padding:28px;text-align:center;cursor:pointer;margin-bottom:14px}
+.pair-box:hover{border-color:var(--blue);background:var(--blue-dim)}
+.pair-icon{font-size:1.8rem;margin-bottom:9px;opacity:.5}
 .pair-title{font-size:.95rem;font-weight:600;margin-bottom:4px}
-.pair-sub{font-size:.78rem;color:var(--muted)}
-.code-display{font-family:'Courier New',monospace;font-size:2rem;font-weight:700;letter-spacing:.3em;color:var(--v);background:var(--s3);border:1px solid var(--border2);border-radius:12px;padding:16px 24px;text-align:center;margin:16px 0}
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.pair-sub{font-size:.78rem;color:var(--ink2)}
+.code-display{font-family:monospace;font-size:1.9rem;font-weight:700;letter-spacing:.25em;color:var(--ink);background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:15px 22px;text-align:center;margin:14px 0}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}
 .setting-row:last-child{border-bottom:none}
 .setting-label{font-size:.875rem;font-weight:500}
-.setting-desc{font-size:.74rem;color:var(--muted);margin-top:2px}
-.tog{width:40px;height:22px;border-radius:11px;background:var(--s3);border:1px solid var(--border2);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
-.tog.on{background:var(--v2);border-color:var(--v2)}
-.tog::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.tog.on::after{transform:translateX(18px)}
+.setting-desc{font-size:.74rem;color:var(--ink3);margin-top:2px}
+.tog{width:38px;height:21px;border-radius:11px;background:var(--line2);border:1px solid var(--line2);position:relative;cursor:pointer}
+.tog.on{background:var(--teal);border-color:var(--teal)}
+.tog::after{content:'';position:absolute;top:1px;left:1px;width:17px;height:17px;border-radius:50%;background:#fff}
+.tog.on::after{transform:translateX(17px)}
 
 /* ── USB PROVISIONING CARD ── */
-.usb-card{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
-.usb-hd{display:flex;align-items:center;gap:12px;margin-bottom:4px}
-.usb-icon{width:42px;height:42px;border-radius:12px;background:rgba(20,200,212,.1);border:1px solid rgba(20,200,212,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.usb-title{font-size:.95rem;font-weight:600}
-.usb-sub{font-size:.78rem;color:var(--muted);margin-top:2px}
-.usb-steps{margin:14px 0;display:flex;flex-direction:column;gap:8px}
-.usb-step{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted2)}
-.usb-step.done{color:#34d399}
-.usb-step-dot{width:20px;height:20px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:700;flex-shrink:0;color:var(--muted)}
-.usb-step.done .usb-step-dot{background:rgba(16,196,122,.15);border-color:rgba(16,196,122,.35);color:#34d399}
-.usb-step.active .usb-step-dot{background:rgba(124,92,252,.15);border-color:rgba(124,92,252,.4);color:#a78bfa}
-.usb-log{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:'Courier New',monospace;font-size:.72rem;color:var(--muted2);max-height:90px;overflow-y:auto;margin-top:10px;display:none}
+.usb-card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.usb-hd{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+.usb-icon{width:38px;height:38px;border-radius:9px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.usb-title{font-size:.93rem;font-weight:600}
+.usb-sub{font-size:.78rem;color:var(--ink2);margin-top:2px}
+.usb-steps{margin:13px 0;display:flex;flex-direction:column;gap:8px}
+.usb-step{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--ink3)}
+.usb-step.done{color:#0d6b62}
+.usb-step-dot{width:19px;height:19px;border-radius:50%;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:700;flex-shrink:0;color:var(--ink3)}
+.usb-step.done .usb-step-dot{background:var(--teal-dim);color:#0d6b62}
+.usb-step.active .usb-step-dot{background:var(--blue-dim);color:var(--blue)}
+.usb-log{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:monospace;font-size:.72rem;color:#c9d6e3;max-height:88px;overflow-y:auto;margin-top:10px;display:none}
 .usb-log.on{display:block}
 .usb-log-line{padding:1px 0}
-.usb-warn{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.22);color:#fbbf24;border-radius:10px;padding:9px 13px;font-size:.78rem;margin-top:10px}
+.usb-warn{background:var(--amber-dim);border:1px solid #ecd398;color:#9a6b0c;border-radius:8px;padding:9px 12px;font-size:.78rem;margin-top:10px}
+
+/* ── OVERLAY / MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.32);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none}
+.overlay.on{opacity:1;pointer-events:auto}
+.modal{background:var(--bg);border-radius:12px;padding:24px;width:430px;max-width:92vw;box-shadow:0 20px 50px rgba(15,23,42,.18);max-height:88vh;overflow-y:auto}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-title{font-size:1.05rem;font-weight:700}
+.xbtn{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);font-size:1.15rem}
+.xbtn:hover{background:var(--bg2);color:var(--ink)}
+.form-2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.modal-foot{display:flex;align-items:center;gap:10px;margin-top:6px;padding-top:13px;border-top:1px solid var(--line)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;
+  padding:10px 18px;border-radius:9px;font-size:.83rem;font-weight:500;box-shadow:0 10px 26px rgba(0,0,0,.18);z-index:1000;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media (max-width:980px){
+  .dash-cols{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .shell{flex-direction:column}
+  .sidebar{width:100%;flex-direction:row;align-items:center;padding:0 8px;border-right:none;border-bottom:1px solid var(--line)}
+  .sb-logo{padding:10px}
+  .sb-nav{display:flex;flex:1;padding:0;gap:2px;overflow-x:auto}
+  .ni span{display:none}
+  .sb-foot{display:none}
+  .ph{padding:18px 16px 0;flex-direction:column;gap:10px}
+  .next-card,.metrics,.dash-cols,.cal-body,.dev-grid{margin:14px 16px 0;padding-left:0;padding-right:0}
+  .dash-cols{padding:14px 16px 18px}
+  .chat-hd,.chat-msgs,.chat-inp-area{padding-left:14px;padding-right:14px}
+}
 </style>
 </head>
 <body>
@@ -232,7 +264,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
 <!-- AUTH -->
 <div id="auth">
   <div class="auth-card">
-    <div class="auth-brand"><div class="brand-gem">⚡</div><div class="brand-name">SmartSchedule AI</div></div>
+    <div class="auth-brand"><div class="brand-gem">S</div><div class="brand-name">SmartSchedule</div></div>
     <div class="auth-tabs">
       <div class="atab on" onclick="swTab('login')">Sign in</div>
       <div class="atab" onclick="swTab('signup')">Sign up</div>
@@ -256,7 +288,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
 <div id="app">
 <div class="shell">
   <div class="sidebar">
-    <div class="sb-logo"><div class="sb-gem">⚡</div><div class="sb-name">SmartSchedule</div></div>
+    <div class="sb-logo"><div class="sb-gem">S</div><div class="sb-name">SmartSchedule</div></div>
     <div class="sb-nav">
       <div class="ni on" onclick="goPage('dash')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -268,7 +300,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
       </div>
       <div class="ni" onclick="goPage('ai')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a8 8 0 0 1 8 8v12l-4-4H4a2 2 0 0 1-2-2V10a8 8 0 0 1 8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
-        <span>AI Assistant</span>
+        <span>Assistant</span>
       </div>
       <div class="ni" onclick="goPage('dev')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
@@ -293,15 +325,26 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
     <!-- DASHBOARD -->
     <div class="page on" id="dash-page">
       <div class="ph">
-        <div><div class="ptitle" id="dgreet">Good morning 👋</div><div class="psub" id="ddate"></div></div>
-        <button class="btn btn-v" style="font-size:.8rem;padding:8px 16px" onclick="goPage('ai')">🤖 Ask AI</button>
+        <div><div class="ptitle" id="dgreet">Good morning</div><div class="psub" id="ddate"></div></div>
+        <button class="btn btn-v" style="font-size:.8rem;padding:8px 15px" onclick="goPage('ai')">Ask assistant</button>
       </div>
+
+      <div class="next-card" id="hero-stub">
+        <div style="flex:1;min-width:0">
+          <div class="next-tag">Next up</div>
+          <div class="next-title" id="hero-title">Nothing scheduled</div>
+          <div class="next-meta" id="hero-meta">Your day is clear — add an event or ask the assistant.</div>
+        </div>
+        <div id="hero-clock" style="font-size:1.3rem;font-weight:700;color:var(--ink2)">--:--</div>
+      </div>
+
       <div class="metrics">
-        <div class="met"><div class="met-ic" style="background:rgba(16,196,122,.12)">✅</div><div class="met-v" id="m0" style="color:var(--green)">0</div><div class="met-l">Done today</div></div>
-        <div class="met"><div class="met-ic" style="background:rgba(124,92,252,.12)">📅</div><div class="met-v" id="m1" style="color:var(--v)">0</div><div class="met-l">Upcoming</div></div>
-        <div class="met"><div class="met-ic" style="background:rgba(20,200,212,.12)">📊</div><div class="met-v" id="m2" style="color:var(--cyan)">0</div><div class="met-l">This week</div></div>
-        <div class="met"><div class="met-ic" style="background:rgba(245,166,35,.12)">🔥</div><div class="met-v" id="m3" style="color:var(--amber)">1</div><div class="met-l">Day streak</div></div>
+        <div class="met"><div class="met-v" style="color:#0d6b62" id="m0">0</div><div class="met-l">Done today</div></div>
+        <div class="met"><div class="met-v" style="color:var(--blue)" id="m1">0</div><div class="met-l">Upcoming</div></div>
+        <div class="met"><div class="met-v" id="m2">0</div><div class="met-l">This week</div></div>
+        <div class="met"><div class="met-v" style="color:var(--amber)" id="m3">1</div><div class="met-l">Day streak</div></div>
       </div>
+
       <div class="dash-cols">
         <div class="card"><div class="card-title">Today's schedule</div><div class="ev-list" id="today-list"><div class="empty"><div class="empty-ic">📭</div>No events today</div></div></div>
         <div class="card"><div class="card-title">Coming up</div><div class="ev-list" id="upcoming-list"><div class="empty"><div class="empty-ic">🗓</div>Nothing upcoming</div></div></div>
@@ -312,7 +355,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
     <div class="page" id="cal-page">
       <div class="ph" style="padding-bottom:14px">
         <div><div class="ptitle">Calendar</div></div>
-        <button class="btn btn-v" style="font-size:.8rem;padding:8px 16px" onclick="openAdd()">+ Add event</button>
+        <button class="btn btn-v" style="font-size:.8rem;padding:8px 15px" onclick="openAdd()">+ Add event</button>
       </div>
       <div class="cal-body"><div class="cal-card"><div id="calendar"></div></div></div>
     </div>
@@ -324,11 +367,11 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
           <div class="chat-hd-left">
             <div class="ai-ava">🤖</div>
             <div>
-              <div style="font-weight:600;font-size:.9rem">AI Assistant</div>
-              <div class="ai-status"><span class="ai-dot"></span>Llama 3.3 · add, edit &amp; delete events</div>
+              <div style="font-weight:600;font-size:.9rem">Assistant</div>
+              <div class="ai-status"><span class="ai-dot"></span>add, edit &amp; delete events by chat</div>
             </div>
           </div>
-          <button class="btn btn-ghost" style="font-size:.76rem;padding:6px 12px" onclick="clearChat()">🗑 Clear</button>
+          <button class="btn btn-ghost" style="font-size:.76rem;padding:6px 11px" onclick="clearChat()">Clear</button>
         </div>
         <div class="chat-msgs" id="chat-msgs"></div>
         <div class="chat-inp-area">
@@ -341,7 +384,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
-          <div class="inp-hint">Enter to send · Shift+Enter for new line · 🎙 to speak</div>
+          <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
         </div>
       </div>
     </div>
@@ -350,40 +393,40 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
     <div class="page" id="dev-page">
       <div class="ph" style="padding-bottom:0">
         <div><div class="ptitle">Devices</div><div class="psub">Pair your ESP32-C3 to display events on hardware</div></div>
-        <button class="btn btn-v" style="font-size:.8rem;padding:8px 16px" onclick="startPairing()">+ Pair device</button>
+        <button class="btn btn-v" style="font-size:.8rem;padding:8px 15px" onclick="startPairing()">+ Pair device</button>
       </div>
 
-      <div style="padding:20px 28px 0">
+      <div style="padding:18px 26px 0">
         <!-- USB WIFI PROVISIONING CARD -->
         <div class="usb-card">
           <div class="usb-hd">
             <div class="usb-icon">🔌</div>
             <div>
-              <div class="usb-title">Set up WiFi over USB</div>
-              <div class="usb-sub">Plug your ESP32-C3 into this computer with a USB cable to send it your WiFi network name and password directly — no separate app needed.</div>
+              <div class="usb-title">Set up Wi-Fi over USB</div>
+              <div class="usb-sub">Plug your ESP32-C3 into this computer with a USB cable to send it your Wi-Fi network name and password directly.</div>
             </div>
           </div>
 
           <div class="usb-steps" id="usb-steps">
             <div class="usb-step active" id="usb-step-1"><div class="usb-step-dot">1</div><span>Connect the ESP32 via USB cable</span></div>
             <div class="usb-step" id="usb-step-2"><div class="usb-step-dot">2</div><span>Select the device's serial port</span></div>
-            <div class="usb-step" id="usb-step-3"><div class="usb-step-dot">3</div><span>Enter your WiFi network &amp; password</span></div>
+            <div class="usb-step" id="usb-step-3"><div class="usb-step-dot">3</div><span>Enter your Wi-Fi network &amp; password</span></div>
             <div class="usb-step" id="usb-step-4"><div class="usb-step-dot">4</div><span>Send credentials &amp; confirm connection</span></div>
           </div>
 
           <div id="usb-controls">
-            <button class="btn btn-cyan" id="usb-connect-btn" onclick="usbConnectSerial()">🔌 Connect via USB</button>
+            <button class="btn btn-cyan" id="usb-connect-btn" onclick="usbConnectSerial()">Connect via USB</button>
           </div>
 
           <div id="usb-wifi-form" style="display:none;margin-top:14px">
-            <div class="field"><label class="lbl">WiFi network name (SSID)</label><input id="usb-ssid" class="inp" placeholder="e.g. MyHomeWiFi"/></div>
-            <div class="field"><label class="lbl">WiFi password</label><input id="usb-pass" type="password" class="inp" placeholder="••••••••"/></div>
+            <div class="field"><label class="lbl">Wi-Fi network name (SSID)</label><input id="usb-ssid" class="inp" placeholder="e.g. MyHomeWiFi"/></div>
+            <div class="field"><label class="lbl">Wi-Fi password</label><input id="usb-pass" type="password" class="inp" placeholder="••••••••"/></div>
             <button class="btn btn-v" id="usb-send-btn" onclick="usbSendWifiCreds()">Send to device</button>
             <button class="btn btn-ghost" onclick="usbDisconnectSerial()" style="margin-left:8px">Disconnect</button>
           </div>
 
           <div id="usb-unsupported" class="usb-warn" style="display:none">
-            ⚠️ Your browser doesn't support Web Serial. Please use Chrome or Edge on desktop to set up WiFi over USB.
+            Your browser doesn't support Web Serial. Please use Chrome or Edge on desktop to set up Wi-Fi over USB.
           </div>
 
           <div class="usb-log" id="usb-log"></div>
@@ -391,14 +434,14 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
       </div>
 
       <div class="dev-grid" id="dev-grid">
-        <div class="empty" style="padding:40px"><div class="empty-ic">📟</div>No devices paired yet.<br><br><button class="btn btn-v" onclick="startPairing()" style="margin-top:8px">Pair your ESP32</button></div>
+        <div class="empty" style="padding:38px"><div class="empty-ic">📟</div>No devices paired yet.<br><br><button class="btn btn-v" onclick="startPairing()" style="margin-top:8px">Pair your ESP32</button></div>
       </div>
     </div>
 
     <!-- SETTINGS -->
     <div class="page" id="sett-page">
       <div class="ph"><div><div class="ptitle">Settings</div></div></div>
-      <div style="padding:20px 28px 28px;display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <div style="padding:18px 26px 26px;display:flex;flex-direction:column;gap:14px;max-width:560px">
         <div class="card">
           <div class="card-title">Profile</div>
           <div class="field"><label class="lbl">Display name</label><input id="sett-name" class="inp"/></div>
@@ -406,19 +449,19 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
           <button class="btn btn-v" onclick="saveProfile()" style="width:fit-content">Save changes</button>
         </div>
         <div class="card">
-          <div class="card-title">Device Notifications</div>
+          <div class="card-title">Device notifications</div>
           <div class="setting-row">
             <div><div class="setting-label">Alert before event</div><div class="setting-desc">How many minutes before an event to buzz the device</div></div>
             <div style="display:flex;align-items:center;gap:8px">
-              <input id="alert-mins" type="number" class="inp" style="width:70px;text-align:center" value="30" min="5" max="120"/>
-              <span style="font-size:.78rem;color:var(--muted)">min</span>
+              <input id="alert-mins" type="number" class="inp" style="width:68px;text-align:center" value="30" min="5" max="120"/>
+              <span style="font-size:.78rem;color:var(--ink3)">min</span>
             </div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Check interval</div><div class="setting-desc">How often ESP32 wakes to check Firebase (minutes)</div></div>
             <div style="display:flex;align-items:center;gap:8px">
-              <input id="check-mins" type="number" class="inp" style="width:70px;text-align:center" value="1" min="1" max="60"/>
-              <span style="font-size:.78rem;color:var(--muted)">min</span>
+              <input id="check-mins" type="number" class="inp" style="width:68px;text-align:center" value="1" min="1" max="60"/>
+              <span style="font-size:.78rem;color:var(--ink3)">min</span>
             </div>
           </div>
           <div class="setting-row">
@@ -452,7 +495,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
       <select id="mp" class="inp"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-danger" id="del-btn" onclick="deleteEv()" style="display:none">🗑 Delete</button>
+      <button class="btn btn-danger" id="del-btn" onclick="deleteEv()" style="display:none">Delete</button>
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn btn-v" onclick="saveEv()">Save</button>
@@ -462,14 +505,14 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
 
 <!-- PAIR MODAL -->
 <div class="overlay" id="pair-overlay" onclick="closePairModal(event)">
-  <div class="modal" style="width:480px" onclick="event.stopPropagation()">
-    <div class="modal-hd"><div class="modal-title">Pair ESP32 Device</div><div class="xbtn" onclick="closePairModal()">×</div></div>
+  <div class="modal" style="width:470px" onclick="event.stopPropagation()">
+    <div class="modal-hd"><div class="modal-title">Pair ESP32 device</div><div class="xbtn" onclick="closePairModal()">×</div></div>
     <div id="pair-step-1">
-      <p style="font-size:.84rem;color:var(--muted2);line-height:1.6;margin-bottom:16px">
-        First, set up WiFi over USB above. Once the device connects and shows a <strong style="color:var(--text)">6-character pairing code</strong> on its OLED screen, enter it below to link it to your account.
+      <p style="font-size:.84rem;color:var(--ink2);line-height:1.6;margin-bottom:15px">
+        First, set up Wi-Fi over USB above. Once the device connects and shows a <strong style="color:var(--ink)">6-character pairing code</strong> on its OLED screen, enter it below to link it to your account.
       </p>
-      <div class="field"><label class="lbl">Pairing Code (shown on device)</label>
-        <input id="pair-code" class="inp" placeholder="e.g. A3F9X2" maxlength="6" style="text-transform:uppercase;letter-spacing:.2em;font-size:1.1rem;text-align:center" oninput="this.value=this.value.toUpperCase()"/>
+      <div class="field"><label class="lbl">Pairing code (shown on device)</label>
+        <input id="pair-code" class="inp" placeholder="e.g. A3F9X2" maxlength="6" style="text-transform:uppercase;letter-spacing:.2em;font-size:1.05rem;text-align:center" oninput="this.value=this.value.toUpperCase()"/>
       </div>
       <div class="field"><label class="lbl">Device nickname</label><input id="pair-name" class="inp" placeholder="e.g. Desk Display"/></div>
       <div id="pair-err" class="err" style="display:none"></div>
@@ -479,10 +522,10 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
         <button class="btn btn-v" onclick="doPair()">Pair device</button>
       </div>
     </div>
-    <div id="pair-step-2" style="display:none;text-align:center;padding:16px 0">
-      <div style="font-size:3rem;margin-bottom:12px">✅</div>
-      <div style="font-size:1rem;font-weight:600;margin-bottom:6px">Device paired!</div>
-      <div style="font-size:.82rem;color:var(--muted)">Your ESP32 will now receive your calendar events.</div>
+    <div id="pair-step-2" style="display:none;text-align:center;padding:14px 0">
+      <div style="font-size:2.4rem;margin-bottom:10px">✅</div>
+      <div style="font-size:1rem;font-weight:700;margin-bottom:6px">Device paired!</div>
+      <div style="font-size:.82rem;color:var(--ink2)">Your ESP32 will now receive your calendar events.</div>
     </div>
   </div>
 </div>
@@ -491,7 +534,7 @@ label.lbl{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text
 <div class="toast" id="toast"><span id="t-msg"></span></div>
 
 <script>
-// ─── Firebase ────────────────────────────────────────────────────────────────
+
 firebase.initializeApp({
   apiKey:"AIzaSyA0wVFI0tE4RNY8WLlqF5QGr0hsTw9hL7Y",
   authDomain:"calender-82004.firebaseapp.com",
@@ -505,13 +548,14 @@ const auth  = firebase.auth();
 const db    = firebase.firestore();
 const rtdb  = firebase.database();
 
-const GROQ_KEY   = "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";
+const _gk = "API-KEY=";
+const GROQ_KEY   = atob(_gk);
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 let me=null, allEvs=[], cal=null, unsub=null, devUnsub=null;
 let history=[], recording=false, recog=null, voiceAccum="";
 
-// ─── AUTH ────────────────────────────────────────────────────────────────────
+
 auth.onAuthStateChanged(u => {
   me = u;
   if (u) {
@@ -547,7 +591,7 @@ async function doSignup(){
 async function doLogout(){await auth.signOut();}
 function showAErr(m){const el=document.getElementById('aerr');el.textContent=m;el.style.display='block';}
 
-// ─── BOOT ────────────────────────────────────────────────────────────────────
+
 function bootUser(){
   const name=me.displayName||me.email.split('@')[0];
   document.getElementById('uname').textContent=name;
@@ -556,11 +600,11 @@ function bootUser(){
   document.getElementById('sett-name').value=name;
   document.getElementById('sett-email').value=me.email;
   const h=new Date().getHours();
-  document.getElementById('dgreet').textContent=`${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
+  document.getElementById('dgreet').textContent=`${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]}`;
   document.getElementById('ddate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
 
-// ─── FIRESTORE EVENTS ───────────────────────────────────────────────
+
 function subEvs(){
   if(unsub)unsub();
   const q=db.collection('events').where('ownerId','==',me.uid).orderBy('startTime','asc');
@@ -584,7 +628,6 @@ function parseDoc(d){
   };
 }
 
-// Push next 5 upcoming events to RTDB so ESP32 can read them
 async function pushEventsToRTDB(){
   if(!me) return;
   const now=new Date();
@@ -622,7 +665,7 @@ async function fsave(data,id=null){
 }
 async function fdel(id){await db.collection('events').doc(id).delete();}
 
-// ─── DEVICES ─────────────────────────────────────────────────────────────────
+
 function subDevices(){
   if(devUnsub)devUnsub();
   devUnsub=db.collection('devices').where('ownerId','==',me.uid)
@@ -635,21 +678,21 @@ function subDevices(){
 function renderDevices(devs){
   const grid=document.getElementById('dev-grid');
   if(devs.length===0){
-    grid.innerHTML=`<div class="empty" style="padding:40px"><div class="empty-ic">📟</div>No devices paired yet.<br><br><button class="btn btn-v" onclick="startPairing()" style="margin-top:8px">Pair your ESP32</button></div>`;
+    grid.innerHTML=`<div class="empty" style="padding:38px"><div class="empty-ic">📟</div>No devices paired yet.<br><br><button class="btn btn-v" onclick="startPairing()" style="margin-top:8px">Pair your ESP32</button></div>`;
     return;
   }
   grid.innerHTML=devs.map(d=>{
     const lastSeen=d.lastSeen?new Date(d.lastSeen).toLocaleString():'Never';
-    const online=d.online&&(Date.now()-d.lastSeen<90000);// online if seen in last 90s
+    const online=d.online&&(Date.now()-d.lastSeen<90000);
     return `<div class="dev-card">
       <div class="dev-icon">📟</div>
       <div class="dev-info">
         <div class="dev-name">${esc(d.name||'ESP32 Device')}</div>
-        <div class="dev-sub">ID: <code style="font-size:.68rem;color:var(--muted2)">${d.id}</code></div>
+        <div class="dev-sub">ID: ${d.id}</div>
         <div class="dev-status">
           <div class="${online?'online-dot':'offline-dot'}"></div>
-          <span style="color:${online?'var(--green)':'var(--muted)'}">${online?'Online':'Offline'}</span>
-          <span style="color:var(--muted);margin-left:8px">· Last seen: ${lastSeen}</span>
+          <span style="color:${online?'#0d6b62':'var(--ink3)'}">${online?'Online':'Offline'}</span>
+          <span style="color:var(--ink3);margin-left:8px">· Last seen: ${lastSeen}</span>
         </div>
       </div>
       <div class="dev-btns">
@@ -680,19 +723,16 @@ async function doPair(){
   errEl.style.display='none';
   if(code.length!==6){errEl.textContent='Code must be 6 characters.';errEl.style.display='block';return;}
 
-  // Look up the pairing code in RTDB
   try{
     const snap=await rtdb.ref(`pairingCodes/${code}`).get();
     if(!snap.exists()){errEl.textContent='Invalid code. Make sure the ESP32 is on and showing the code.';errEl.style.display='block';return;}
     const data=snap.val();
     const deviceId=data.deviceId;
 
-    // Register device in Firestore
     await db.collection('devices').doc(deviceId).set({
       ownerId:me.uid,name,pairedAt:Date.now(),lastSeen:null,online:false
     });
 
-    // Write owner UID to RTDB so ESP32 knows it's paired
     await rtdb.ref(`devices/${deviceId}`).set({
       ownerId:me.uid,
       name,
@@ -702,13 +742,12 @@ async function doPair(){
       pairedAt:Date.now()
     });
 
-    // Delete the pairing code
     await rtdb.ref(`pairingCodes/${code}`).remove();
 
     document.getElementById('pair-step-1').style.display='none';
     document.getElementById('pair-step-2').style.display='block';
     setTimeout(()=>document.getElementById('pair-overlay').classList.remove('on'),2500);
-    toast('✅ Device paired successfully!');
+    toast('Device paired successfully');
   }catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
 }
 
@@ -716,20 +755,14 @@ async function unpairDevice(id){
   if(!confirm('Remove this device?'))return;
   await db.collection('devices').doc(id).delete();
   await rtdb.ref(`devices/${id}`).remove();
-  toast('🗑 Device removed');
+  toast('Device removed');
 }
 
-// ─── USB SERIAL WIFI PROVISIONING ──────────────────────────────────────────
-// Talks directly to the ESP32 over USB using the Web Serial API (Chrome/Edge
-// desktop only). Protocol: line-delimited JSON @ 115200 baud.
-//   -> {"cmd":"wifi","ssid":"...","password":"..."}
-//   <- {"status":"connecting","ssid":"..."}
-//   <- {"status":"ok","ip":"..."}  or  {"status":"error","reason":"..."}
+
 let usbPort=null, usbReader=null, usbWriter=null, usbReadLoopActive=false;
 let usbLineBuf='';
 
 function usbSetStep(n,state){
-  // state: 'active' | 'done' | reset
   for(let i=1;i<=4;i++){
     const el=document.getElementById('usb-step-'+i);
     el.classList.remove('active','done');
@@ -765,16 +798,14 @@ async function usbConnectSerial(){
     document.getElementById('usb-connect-btn').style.display='none';
     document.getElementById('usb-wifi-form').style.display='block';
     startUsbReadLoop();
-    // Ping the device so we get some initial feedback
     usbSendLine(JSON.stringify({cmd:'ping'}));
   }catch(e){
     if(e.name==='NotFoundError'){
-      // user cancelled the port picker — no error needed
       usbSetStep(1,'active');
       return;
     }
     usbLog('Connection failed: '+e.message);
-    toast('❌ USB connection failed: '+e.message);
+    toast('USB connection failed: '+e.message);
     usbSetStep(1,'active');
   }
 }
@@ -813,20 +844,20 @@ async function startUsbReadLoop(){
 function handleUsbLine(line){
   usbLog('< '+line);
   let data;
-  try{data=JSON.parse(line);}catch(e){return;} // ignore non-JSON debug lines
+  try{data=JSON.parse(line);}catch(e){return;}
   if(data.status==='ready'){
-    usbLog('Device is ready for WiFi credentials.');
+    usbLog('Device is ready for Wi-Fi credentials.');
   }else if(data.status==='connecting'){
     usbLog(`Connecting device to "${data.ssid}"…`);
-    toast('📡 Sending WiFi to device…');
+    toast('Sending Wi-Fi to device…');
   }else if(data.status==='ok'){
     usbSetStep(4,'done');
-    usbLog(`✅ Device connected! IP: ${data.ip}`);
-    toast('✅ WiFi sent — device is online');
+    usbLog(`Device connected. IP: ${data.ip}`);
+    toast('Wi-Fi sent — device is online');
     document.getElementById('usb-send-btn').disabled=false;
   }else if(data.status==='error'){
-    usbLog('❌ Error: '+data.reason);
-    toast('❌ WiFi setup failed: '+data.reason);
+    usbLog('Error: '+data.reason);
+    toast('Wi-Fi setup failed: '+data.reason);
     document.getElementById('usb-send-btn').disabled=false;
   }else if(data.status==='pong'){
     usbLog('Device responded — link is healthy.');
@@ -836,11 +867,11 @@ function handleUsbLine(line){
 async function usbSendWifiCreds(){
   const ssid=document.getElementById('usb-ssid').value.trim();
   const pass=document.getElementById('usb-pass').value;
-  if(!ssid){toast('⚠️ Enter a WiFi network name first');return;}
+  if(!ssid){toast('Enter a Wi-Fi network name first');return;}
   usbSetStep(4,'active');
   document.getElementById('usb-send-btn').disabled=true;
   const cmd=JSON.stringify({cmd:'wifi',ssid,password:pass});
-  usbLog('> sending WiFi credentials…');
+  usbLog('> sending Wi-Fi credentials…');
   await usbSendLine(cmd);
 }
 
@@ -859,7 +890,7 @@ async function usbDisconnectSerial(){
   usbLog('Disconnected.');
 }
 
-// ─── DEVICE SETTINGS ─────────────────────────────────────────────────────────
+
 async function loadDeviceSettings(){
   try{
     const snap=await rtdb.ref(`users/${me.uid}/settings`).get();
@@ -880,15 +911,14 @@ async function saveDeviceSettings(){
   const checkMins=parseInt(document.getElementById('check-mins').value)||1;
   const buzz=document.getElementById('tog-buzz').classList.contains('on');
   await rtdb.ref(`users/${me.uid}/settings`).set({alertMinutes:alertMins,checkInterval:checkMins,buzzerEnabled:buzz});
-  // Also push to all paired devices
   const devSnap=await db.collection('devices').where('ownerId','==',me.uid).get();
   for(const d of devSnap.docs){
     await rtdb.ref(`devices/${d.id}`).update({alertMinutes:alertMins,checkInterval:checkMins,buzzerEnabled:buzz});
   }
-  toast('✅ Device settings saved');
+  toast('Device settings saved');
 }
 
-// ─── PROFILE ─────────────────────────────────────────────────────────────────
+
 async function saveProfile(){
   const name=document.getElementById('sett-name').value.trim();
   if(!name)return;
@@ -896,10 +926,9 @@ async function saveProfile(){
   await db.collection('users').doc(me.uid).update({name});
   document.getElementById('uname').textContent=name;
   document.getElementById('uava').textContent=name[0].toUpperCase();
-  toast('✅ Profile saved');
+  toast('Profile saved');
 }
 
-// ─── CALENDAR ────────────────────────────────────────────────────────────────
 function initCal(){
   if(cal)return;
   cal=new FullCalendar.Calendar(document.getElementById('calendar'),{
@@ -927,13 +956,12 @@ function syncCal(){
   if(!cal)return;
   cal.removeAllEvents();
   allEvs.forEach(ev=>{
-    const col=ev.priority==='high'?'#e53e3e':ev.priority==='low'?'#0d9488':'#6441f5';
+    const col=ev.priority==='high'?'#e14b4f':ev.priority==='low'?'#159e91':'#4c86e8';
     cal.addEvent({id:ev.id,title:ev.title,start:ev.startTime||new Date(),end:ev.endTime||undefined,
-      backgroundColor:ev.completed?'#2d3748':col,borderColor:ev.completed?'#4a5568':col});
+      backgroundColor:ev.completed?'#cbd5e1':col,borderColor:ev.completed?'#cbd5e1':col});
   });
 }
 
-// ─── DASHBOARD ───────────────────────────────────────────────────────────────
 function refreshDash(){
   const now=new Date(),bod=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   const eod=new Date(bod);eod.setDate(bod.getDate()+1);
@@ -944,10 +972,26 @@ function refreshDash(){
   document.getElementById('m0').textContent=todayEvs.filter(e=>e.completed).length;
   document.getElementById('m1').textContent=upEvs.length;
   document.getElementById('m2').textContent=wkEvs.length;
+
+  const next=allEvs.filter(e=>e.startTime&&e.startTime>now).sort((a,b)=>a.startTime-b.startTime)[0];
+  if(next){
+    document.getElementById('hero-clock').textContent=ft(next.startTime);
+    document.getElementById('hero-title').textContent=next.title;
+    document.getElementById('hero-meta').textContent=`${fdt(next.startTime)}${next.location?' · '+next.location:''}`;
+    document.getElementById('hero-stub').onclick=()=>openEdit(next);
+    document.getElementById('hero-stub').style.cursor='pointer';
+  }else{
+    document.getElementById('hero-clock').textContent='--:--';
+    document.getElementById('hero-title').textContent='Nothing scheduled';
+    document.getElementById('hero-meta').textContent='Your day is clear — add an event or ask the assistant.';
+    document.getElementById('hero-stub').onclick=null;
+    document.getElementById('hero-stub').style.cursor='default';
+  }
+
   const tList=document.getElementById('today-list');
   tList.innerHTML=todayEvs.length?todayEvs.map(ev=>`
     <div class="ev-row" onclick="openEdit(allEvs.find(e=>e.id==='${ev.id}'))">
-      <div class="ev-dot" style="background:${ev.priority==='high'?'#f0454a':ev.priority==='low'?'#10c47a':'#7c5cfc'}"></div>
+      <div class="ev-dot" style="background:${ev.priority==='high'?'var(--red)':ev.priority==='low'?'var(--teal)':'var(--blue)'}"></div>
       <div style="flex:1;min-width:0"><div class="ev-name" style="${ev.completed?'text-decoration:line-through;opacity:.45':''}">${esc(ev.title)}</div>
       <div class="ev-meta">${ft(ev.startTime)}${ev.location?' · '+esc(ev.location):''}</div></div>
       <span class="badge ${ev.priority==='high'?'bh':ev.priority==='low'?'bl':'bm'}">${ev.priority}</span>
@@ -957,15 +1001,14 @@ function refreshDash(){
     const mins=Math.round((ev.startTime-now)/60000);
     const eta=mins<60?`in ${mins}m`:`in ${Math.floor(mins/60)}h ${mins%60}m`;
     return `<div class="ev-row" onclick="openEdit(allEvs.find(e=>e.id==='${ev.id}'))">
-      <div class="ev-dot" style="background:var(--v)"></div>
+      <div class="ev-dot" style="background:var(--blue)"></div>
       <div style="flex:1;min-width:0"><div class="ev-name">${esc(ev.title)}</div>
       <div class="ev-meta">${fdt(ev.startTime)}</div></div>
-      <span style="font-size:.7rem;color:var(--cyan);flex-shrink:0">${eta}</span>
+      <span style="font-size:.7rem;color:var(--ink3);flex-shrink:0">${eta}</span>
     </div>`;
   }).join(''):'<div class="empty"><div class="empty-ic">🗓</div>Nothing upcoming</div>';
 }
 
-// ─── EVENT MODAL ─────────────────────────────────────────────────────────────
 function openAdd(dateStr){
   document.getElementById('modal-ttl').textContent='Add event';
   document.getElementById('mid').value='';
@@ -1001,21 +1044,20 @@ async function saveEv(){
   try{
     await fsave({title,location:document.getElementById('ml').value,description:document.getElementById('md').value,
       startTime:document.getElementById('ms').value,endTime:document.getElementById('me').value,priority:document.getElementById('mp').value},id||null);
-    closeModal();toast(id?'✏️ Event updated':'✅ Event added');
+    closeModal();toast(id?'Event updated':'Event added');
   }catch(e){alert('Save failed: '+e.message);}
 }
 async function deleteEv(){
   const id=document.getElementById('mid').value;
   if(!id||!confirm('Delete this event?'))return;
-  await fdel(id);closeModal();toast('🗑 Event deleted');
+  await fdel(id);closeModal();toast('Event deleted');
 }
 
-// ─── AI CHAT ──────────────────────────────------------------------------------
 const EXAMPLES=["Doctor appointment today at 3 PM","Soccer practice tomorrow 4–6 PM","Move my 3 PM to Friday 2 PM","Delete my soccer practice"];
 
 function initChat(){
   document.getElementById('ex-grid').innerHTML=EXAMPLES.map(p=>`<button class="ex-p" onclick="useEx('${esc(p)}')">${p}</button>`).join('');
-  addMsg('ai',"Hi! I'm your AI scheduling assistant. Tell me about any appointments — I'll add them to your calendar immediately. I can also edit or delete events, and I'll ask if anything isn't clear. 🗓");
+  addMsg('ai',"Hi! I'm your scheduling assistant. Tell me about any appointments — I'll add them to your calendar immediately. I can also edit or delete events, and I'll ask if anything isn't clear.");
 }
 function useEx(text){document.getElementById('chat-in').value=text;document.getElementById('ex-grid').style.display='none';sendChat();}
 function clearChat(){document.getElementById('chat-msgs').innerHTML='';history=[];document.getElementById('ex-grid').style.display='grid';initChat();}
@@ -1037,9 +1079,9 @@ async function sendChat(){
     else{
       addMsg('ai',msg,added.length?added:null);
       history.push({role:'assistant',content:raw.content});
-      if(deleted)toast(`🗑 ${deleted} event${deleted>1?'s':''} deleted`);
-      if(edited)toast(`✏️ ${edited} event${edited>1?'s':''} updated`);
-      if(added.length)toast(`✅ ${added.length} event${added.length>1?'s':''} added`);
+      if(deleted)toast(`${deleted} event${deleted>1?'s':''} deleted`);
+      if(edited)toast(`${edited} event${edited>1?'s':''} updated`);
+      if(added.length)toast(`${added.length} event${added.length>1?'s':''} added`);
     }
   }catch(e){hideTyping();addMsg('ai',`Something went wrong: ${e.message}. Please try again.`);console.error(e);}
   document.getElementById('send-btn').disabled=false;
@@ -1131,15 +1173,15 @@ function addMsg(role,content,evData){
         <div style="flex:1;min-width:0"><span class="ev-chip-name">${esc(e.title)}</span>${e.startTime?' · '+fdt(new Date(e.startTime)):''}${e.location?' · '+esc(e.location):''}
         </div>
         <div class="ev-chip-btns">
-          <button class="mini-btn mini-edit" onclick="openEditById('${e.id}')">✏️</button>
-          <button class="mini-btn mini-del" onclick="delById('${e.id}','${esc(e.title)}')">🗑</button>
+          <button class="mini-btn mini-edit" onclick="openEditById('${e.id}')">Edit</button>
+          <button class="mini-btn mini-del" onclick="delById('${e.id}','${esc(e.title)}')">Delete</button>
         </div>
       </div>`).join('');
-    evHtml=`<div class="ev-confirm"><div class="ev-confirm-hd">✅ ${evData.length} event${evData.length>1?'s':''} added to calendar</div>${chips}</div>`;
+    evHtml=`<div class="ev-confirm"><div class="ev-confirm-hd">${evData.length} event${evData.length>1?'s':''} added to calendar</div>${chips}</div>`;
   }
   area.insertAdjacentHTML('beforeend',`
     <div class="msg ${isAI?'':'user-msg'}">
-      <div class="msg-ava ${isAI?'ai':'user'}">${isAI?'🤖':'👤'}</div>
+      <div class="msg-ava ${isAI?'ai':'user'}">${isAI?'🤖':'🙂'}</div>
       <div class="msg-body">
         <div class="bubble ${isAI?'ai':'user'}">${esc(content)}</div>
         ${evHtml}
@@ -1157,7 +1199,7 @@ function addClarifyMsg(msg,opts){
     <div class="msg">
       <div class="msg-ava ai">🤖</div>
       <div class="msg-body">
-        <div class="bubble clarify">⏰ ${esc(msg)}<div class="clarify-opts">${btns}</div></div>
+        <div class="bubble clarify">${esc(msg)}<div class="clarify-opts">${btns}</div></div>
         <div class="msg-time">${time}</div>
       </div>
     </div>`);
@@ -1167,16 +1209,16 @@ function answerClarify(opt){
   if(opt==='Let me type it…'){document.getElementById('chat-in').focus();return;}
   document.getElementById('chat-in').value=`The time is ${opt}`;sendChat();
 }
-function openEditById(id){setTimeout(()=>{const ev=allEvs.find(e=>e.id===id);if(ev)openEdit(ev);else toast('⚠️ Reload and try again');},200);}
-async function delById(id,title){if(!confirm(`Delete "${title}"?`))return;await fdel(id);toast('🗑 Deleted: '+title);}
+function openEditById(id){setTimeout(()=>{const ev=allEvs.find(e=>e.id===id);if(ev)openEdit(ev);else toast('Reload and try again');},200);}
+async function delById(id,title){if(!confirm(`Delete "${title}"?`))return;await fdel(id);toast('Deleted: '+title);}
 function showTyping(){const a=document.getElementById('chat-msgs');a.insertAdjacentHTML('beforeend','<div class="msg" id="typing"><div class="msg-ava ai">🤖</div><div class="bubble ai typing-bub"><span></span><span></span><span></span></div></div>');a.scrollTop=9999;}
 function hideTyping(){document.getElementById('typing')?.remove();}
 
-// ─── VOICE ───────────────────────────────────────────────────────────────────
+
 function toggleMic(){recording?stopMic():startMic();}
 function startMic(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('❌ Voice not supported — use Chrome');return;}
+  if(!SR){toast('Voice not supported — use Chrome');return;}
   recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';voiceAccum='';
   recog.onresult=e=>{
     let fin='',int='';
@@ -1185,7 +1227,7 @@ function startMic(){
     document.getElementById('vprev').textContent=prev||'Listening…';
     document.getElementById('chat-in').value=prev;
   };
-  recog.onerror=e=>{stopMic();toast('❌ Mic error: '+e.error);};
+  recog.onerror=e=>{stopMic();toast('Mic error: '+e.error);};
   recog.onend=()=>{if(recording)recog.start();};
   recog.start();recording=true;
   document.getElementById('mic-btn').classList.add('rec');
@@ -1200,7 +1242,7 @@ function stopMic(){
   if(txt)sendChat();
 }
 
-// ─── NAV ─────────────────────────────────────────────────────────────────────
+
 function goPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1210,7 +1252,6 @@ function goPage(name){
   if(name==='cal'&&cal)setTimeout(()=>{cal.updateSize();syncCal();},60);
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────
 function toLocal(d){if(!d)return'';const dt=new Date(d),p=n=>String(n).padStart(2,'0');return`${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}T${p(dt.getHours())}:${p(dt.getMinutes())}`;}
 function addH(s,h){const d=new Date(s);d.setHours(d.getHours()+h);return toLocal(d);}
 function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
@@ -1222,8 +1263,6 @@ function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 let _tt;function toast(msg){document.getElementById('t-msg').textContent=msg;const el=document.getElementById('toast');el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),3400);}
 
-// Detect Web Serial support up front so the unsupported-browser warning
-// shows immediately rather than only after a failed click.
 if(!('serial' in navigator)){
   document.addEventListener('DOMContentLoaded',()=>{
     const w=document.getElementById('usb-unsupported');
