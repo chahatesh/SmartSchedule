@@ -9,21 +9,15 @@
 #include <time.h>
 #include <esp_task_wdt.h>
 
-// ── Credentials ──────────────────────────────────────────────
-// NOTE: WiFi SSID/password are NO LONGER hardcoded. They are provisioned
-// over USB serial from the website and stored in NVS. See ss_wifi
-// namespace / wifiProvisioning() below.
 #define FIREBASE_API_KEY     "AIzaSyA0wVFI0tE4RNY8WLlqF5QGr0hsTw9hL7Y"
 #define FIREBASE_DB_URL      "https://calender-82004-default-rtdb.firebaseio.com/"
 
-// ── Pin / screen ─────────────────────────────────────────────
 #define OLED_SDA        8
 #define OLED_SCL        9
 #define BUZZER_PIN      3
 #define SCREEN_WIDTH    128
 #define SCREEN_HEIGHT   64
 
-// ── Timing ───────────────────────────────────────────────────
 #define POLL_INTERVAL_MS       30000UL
 #define HEARTBEAT_INTERVAL_MS  300000UL
 #define WIFI_TIMEOUT_MS        15000UL
@@ -32,7 +26,6 @@
 #define DEFAULT_BUZZER_ENABLED true
 #define SERIAL_LINE_MAX        256
 
-// ── Global objects ────────────────────────────────────────────
 FirebaseData     fbdo;
 FirebaseData     fbdoSettings;
 FirebaseAuth     fbAuth;
@@ -40,35 +33,32 @@ FirebaseConfig   fbConfig;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 Preferences      prefs;
 
-// ── Device state ─────────────────────────────────────────────
+
 char ownerUid[64] = "";
 char deviceId[32] = "";
 bool fbSignedUp   = false;
 
-// ── WiFi credential state (loaded from NVS) ───────────────────
+
 char wifiSsid[64]     = "";
 char wifiPassword[64] = "";
 
-// ── Alert dedup ───────────────────────────────────────────────
+
 bool alertedLast          = false;
 char lastAlertedTitle[64] = "";
 
-// ── Settings ─────────────────────────────────────────────────
+
 int  alertMinutes  = DEFAULT_ALERT_MINUTES;
 bool buzzerEnabled = DEFAULT_BUZZER_ENABLED;
 
-// ── Loop timers ───────────────────────────────────────────────
+
 unsigned long lastPollMs      = 0;
 unsigned long lastHeartbeatMs = 0;
 
-// Forward decls
+
 bool connectWiFi();
 void wifiProvisioning();
 bool tryApplyWifiCreds(const char* ssid, const char* password, char* reasonOut, size_t reasonLen);
 
-// ═════════════════════════════════════════════════════════════
-//  OLED
-// ═════════════════════════════════════════════════════════════
 
 void oledInit() {
   Wire.begin(OLED_SDA, OLED_SCL);
@@ -108,7 +98,7 @@ void oledTwoEvents(const char* title1, const char* time1, const char* loc1,
                    const char* title2,    const char* time2) {
   display.clearDisplay(); display.setTextSize(1);
 
-  // ── Live clock header (inverted) ─────────────────────────
+
   display.fillRect(0, 0, 128, 10, SSD1306_WHITE);
   display.setTextColor(SSD1306_BLACK); display.setCursor(2, 1);
   char nowStr[22];
@@ -116,26 +106,26 @@ void oledTwoEvents(const char* title1, const char* time1, const char* loc1,
   display.print(nowStr);
   display.setTextColor(SSD1306_WHITE);
 
-  // ── Event 1 title ────────────────────────────────────────
+
   char t1[21]; strncpy(t1, title1, 20); t1[20] = '\0';
   display.setCursor(0, 12); display.print(t1);
 
-  // ── Event 1 date + time ──────────────────────────────────
+
   display.setCursor(0, 22); display.print(time1);
 
-  // ── Location (only if non-empty) ─────────────────────────
+
   if (loc1 && loc1[0]) {
     char l1[21]; strncpy(l1, loc1, 20); l1[20] = '\0';
     display.setCursor(0, 32); display.print(l1);
   }
 
-  // ── Countdown ────────────────────────────────────────────
+
   display.setCursor(0, 42); display.print(countdown1);
 
-  // ── Divider ──────────────────────────────────────────────
+
   display.drawLine(0, 52, 127, 52, SSD1306_WHITE);
 
-  // ── Event 2 compact ──────────────────────────────────────
+
   display.setCursor(0, 54);
   if (title2 && title2[0]) {
     char t2[11]; strncpy(t2, title2, 10); t2[10] = '\0';
@@ -169,38 +159,31 @@ void oledProvisioning(const char* status) {
   display.display();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Buzzer
-// ═════════════════════════════════════════════════════════════
 
 void beep(int freq, int durationMs) {
   tone(BUZZER_PIN, freq, durationMs); delay(durationMs + 20); noTone(BUZZER_PIN);
 }
 
-// 5-second alert buzz — plays as 10 × 500ms pulses so the WDT
-// gets fed every iteration and the sound has a slight pulsing
-// quality rather than a flat drone (easier to notice).
+
 void alertBuzz() {
   Serial.println(F("ALERT BUZZ — 5 seconds"));
   for (int i = 0; i < 10; i++) {
     esp_task_wdt_reset();
-    tone(BUZZER_PIN, 1800);   // start tone (no duration = continuous)
+    tone(BUZZER_PIN, 1800);   
     delay(400);
     noTone(BUZZER_PIN);
-    delay(100);               // tiny gap between pulses
+    delay(100);               
   }
-  noTone(BUZZER_PIN);         // ensure it's definitely off
+  noTone(BUZZER_PIN);        
 }
 
 void confirmBeep() { beep(2000, 80); }
 void errorBeep()   { beep(300, 150); delay(60); beep(300, 150); }
 
-// ═════════════════════════════════════════════════════════════
-//  NVS — WiFi credentials
-// ═════════════════════════════════════════════════════════════
+
 
 bool nvsLoadWifiCreds() {
-  prefs.begin("ss_wifi", true);   // read-only
+  prefs.begin("ss_wifi", true);   
   String s = prefs.getString("ssid", "");
   String p = prefs.getString("password", "");
   prefs.end();
@@ -227,13 +210,8 @@ void nvsClearWifiCreds() {
   wifiSsid[0] = '\0'; wifiPassword[0] = '\0';
 }
 
-// ═════════════════════════════════════════════════════════════
-//  NVS — device identity (owner uid, device id, pairing code)
-// ═════════════════════════════════════════════════════════════
-
-// Returns true if a valid ownerUid was found in NVS
 bool nvsLoadOwnerUid() {
-  prefs.begin("ss_device", true);          // read-only
+  prefs.begin("ss_device", true);         
   String uid = prefs.getString("owner_uid", "");
   prefs.end();
   if (uid.length() == 0) return false;
@@ -284,13 +262,6 @@ void clearPairingCode() {
   prefs.begin("ss_device", false); prefs.remove("pair_code"); prefs.end();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  WiFi connect (using whatever is currently in wifiSsid/wifiPassword)
-//  Returns true on success. Single attempt with WIFI_TIMEOUT_MS budget.
-//  The "try 3 times" policy lives in the callers (wifiProvisioning /
-//  setup), since each context needs slightly different UI feedback
-//  between attempts.
-// ═════════════════════════════════════════════════════════════
 
 bool connectWiFiOnce() {
   if (WiFi.status() == WL_CONNECTED) return true;
@@ -313,8 +284,6 @@ bool connectWiFiOnce() {
   return true;
 }
 
-// Back-compat wrapper used elsewhere in the file (loop() reconnect, etc).
-// Retries up to WIFI_MAX_ATTEMPTS times before giving up.
 bool connectWiFi() {
   if (WiFi.status() == WL_CONNECTED) return true;
   for (int attempt = 1; attempt <= WIFI_MAX_ATTEMPTS; attempt++) {
@@ -325,33 +294,6 @@ bool connectWiFi() {
   }
   return false;
 }
-
-// ═════════════════════════════════════════════════════════════
-//  USB SERIAL WIFI PROVISIONING
-//
-//  Protocol (line-delimited JSON, 115200 baud, newline-terminated):
-//
-//    Host -> Device:
-//      {"cmd":"wifi","ssid":"MyNetwork","password":"secret123"}
-//      {"cmd":"wifi_reset"}                 (forces re-provisioning)
-//      {"cmd":"ping"}                       (liveness check)
-//
-//    Device -> Host:
-//      {"status":"ready"}                              on entering provisioning mode
-//      {"status":"connecting","ssid":"MyNetwork"}       while attempting
-//      {"status":"ok","ip":"192.168.1.42"}              on success
-//      {"status":"error","reason":"auth_failed"}        on failure
-//      {"status":"error","reason":"timeout"}
-//      {"status":"error","reason":"bad_json"}
-//      {"status":"pong"}                                reply to ping
-//
-//  The website's "Connect via USB" button uses the Web Serial API to
-//  open this same port and speak this protocol directly from the
-//  browser — no native app required.
-// ═════════════════════════════════════════════════════════════
-
-// Reads one line from Serial (blocking with WDT feed), returns "" if
-// nothing complete arrived within the timeout.
 String readSerialLine(unsigned long timeoutMs) {
   static char buf[SERIAL_LINE_MAX];
   size_t len = 0;
@@ -377,8 +319,6 @@ void sendStatus(const char* json) {
   Serial.println(json);
 }
 
-// Attempts to apply new WiFi creds (up to WIFI_MAX_ATTEMPTS tries),
-// reporting progress over Serial as it goes. Returns true on success.
 bool tryApplyWifiCreds(const char* ssid, const char* password, char* reasonOut, size_t reasonLen) {
   strncpy(wifiSsid, ssid, sizeof(wifiSsid)-1);             wifiSsid[sizeof(wifiSsid)-1] = '\0';
   strncpy(wifiPassword, password, sizeof(wifiPassword)-1); wifiPassword[sizeof(wifiPassword)-1] = '\0';
@@ -399,15 +339,14 @@ bool tryApplyWifiCreds(const char* ssid, const char* password, char* reasonOut, 
   return false;
 }
 
-// Blocks here until valid WiFi credentials are received and applied
-// successfully. Shows live status on the OLED the whole time.
+
 void wifiProvisioning() {
   Serial.println(F("{\"status\":\"ready\"}"));
   oledProvisioning("waiting for USB...");
 
   while (true) {
     esp_task_wdt_reset();
-    String line = readSerialLine(60000UL);   // 60s read window, loops forever
+    String line = readSerialLine(60000UL);  
     if (line.length() == 0) {
       oledProvisioning("waiting for USB...");
       continue;
@@ -443,7 +382,7 @@ void wifiProvisioning() {
         oledProvisioning("connected!");
         confirmBeep();
         delay(800);
-        return;   // proceed into normal boot path
+        return;   
       } else {
         char fail[96];
         snprintf(fail, sizeof(fail), "{\"status\":\"error\",\"reason\":\"%s\"}", reason);
@@ -455,7 +394,7 @@ void wifiProvisioning() {
     }
 
     if (strcmp(cmd, "wifi_reset") == 0) {
-      // Already in provisioning mode, but acknowledge anyway.
+      
       sendStatus("{\"status\":\"ready\"}");
       continue;
     }
@@ -464,8 +403,6 @@ void wifiProvisioning() {
   }
 }
 
-// Checked at the top of loop() so a device that's already running can
-// be told (over USB) to switch networks without a physical reset.
 void checkForWifiResetCommand() {
   if (!Serial.available()) return;
   String line = readSerialLine(200UL);
@@ -480,17 +417,12 @@ void checkForWifiResetCommand() {
     nvsClearWifiCreds();
     WiFi.disconnect(true);
     oledProvisioning("waiting for USB...");
-    wifiProvisioning();          // blocks until re-provisioned
-    // Resuming loop() after this is fine — Firebase session is untouched,
-    // event polling will just pick back up on the next interval.
+    wifiProvisioning();        
+
   } else if (strcmp(cmd, "ping") == 0) {
     Serial.println(F("{\"status\":\"pong\"}"));
   }
 }
-
-// ═════════════════════════════════════════════════════════════
-//  Firebase
-// ═════════════════════════════════════════════════════════════
 
 bool firebaseInit() {
   fbConfig.api_key               = FIREBASE_API_KEY;
@@ -514,13 +446,8 @@ bool firebaseInit() {
   return true;
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Pairing flow (UNCHANGED from v5 — account linking only,
-//  independent of WiFi provisioning)
-// ═════════════════════════════════════════════════════════════
 
 void runPairingFlow() {
-  // Use a DEDICATED FirebaseData for pairing — never reused elsewhere
   FirebaseData fbdoPairing;
 
   char code[8] = "";
@@ -542,8 +469,7 @@ void runPairingFlow() {
   while (true) {
     esp_task_wdt_reset();
     delay(3000);
-    esp_task_wdt_reset();   // feed again after the 3s delay
-
+    esp_task_wdt_reset();  
     if (Firebase.RTDB.getString(&fbdoPairing, devPath)) {
       String uid = fbdoPairing.stringData();
       if (uid.length() > 0 && uid != "null") {
@@ -568,10 +494,6 @@ void runPairingFlow() {
   }
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Settings
-// ═════════════════════════════════════════════════════════════
-
 void readSettings() {
   esp_task_wdt_reset();
   char path[48];
@@ -586,10 +508,6 @@ void readSettings() {
   esp_task_wdt_reset();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Heartbeat
-// ═════════════════════════════════════════════════════════════
-
 void heartbeat() {
   esp_task_wdt_reset();
   char path[48];
@@ -601,9 +519,6 @@ void heartbeat() {
   esp_task_wdt_reset();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Formatting helpers
-// ═════════════════════════════════════════════════════════════
 
 void formatTime(time_t t, char* out, size_t outLen) {
   struct tm* ti = localtime(&t);
@@ -642,10 +557,6 @@ void formatCountdown(long s, char* out, size_t outLen) {
   if (mins < 60) snprintf(out, outLen, "%ldm", mins);
   else           snprintf(out, outLen, "%ldh%ldm", mins/60, mins%60);
 }
-
-// ═════════════════════════════════════════════════════════════
-//  Event check (UNCHANGED logic from v5)
-// ═════════════════════════════════════════════════════════════
 
 void cacheEventDisplay(const char* t1, const char* tm1, const char* l1,
                        const char* t2, const char* tm2,
@@ -801,15 +712,11 @@ void checkEvents() {
   esp_task_wdt_reset();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  setup()
-// ═════════════════════════════════════════════════════════════
-
 void setup() {
   esp_task_wdt_add(NULL);
 
   Serial.begin(115200); delay(500);
-  Serial.println(F("\n=== SmartSchedule AI v6 ==="));
+  Serial.println(F("\n=== SmartSchedule AI"));
   pinMode(BUZZER_PIN, OUTPUT);
   oledInit();
 
@@ -818,21 +725,20 @@ void setup() {
 
   ensureDeviceId();
 
-  // ── WiFi: load saved creds, or go straight to provisioning ──
   bool haveCreds = nvsLoadWifiCreds();
   bool wifiOk = false;
 
   if (haveCreds) {
     Serial.print(F("Saved SSID: ")); Serial.println(wifiSsid);
-    wifiOk = connectWiFi();   // tries WIFI_MAX_ATTEMPTS times internally
+    wifiOk = connectWiFi(); 
   }
 
   if (!wifiOk) {
     Serial.println(F("No working WiFi — entering provisioning mode"));
-    wifiProvisioning();       // blocks until credentials work, then returns
+    wifiProvisioning();       
   }
 
-  ensureDeviceId();   // deviceId depends on MAC, which is stable post-connect too
+  ensureDeviceId();   
 
   oledShow("WiFi OK", WiFi.localIP().toString().c_str(), "", "Firebase...");
   if (!firebaseInit()) {
@@ -852,8 +758,7 @@ void setup() {
   bool alreadyPaired = nvsLoadOwnerUid();
 
   if (!alreadyPaired) {
-    runPairingFlow();   // calls ESP.restart() internally on success
-    // Never reaches here
+    runPairingFlow();   
   }
 
   Serial.println(F("=== Post-pair state ==="));
@@ -867,9 +772,6 @@ void setup() {
   lastHeartbeatMs = millis();
 }
 
-// ═════════════════════════════════════════════════════════════
-//  Cached display state (UNCHANGED from v5)
-// ═════════════════════════════════════════════════════════════
 static char cached_title1[64]     = "";
 static char cached_time1[20]      = "";
 static char cached_loc1[64]       = "";
@@ -906,9 +808,6 @@ void redrawDisplay() {
                 cached_title2, cached_time2);
 }
 
-// ═════════════════════════════════════════════════════════════
-//  loop()
-// ═════════════════════════════════════════════════════════════
 
 unsigned long lastClockMs = 0;
 
@@ -916,15 +815,14 @@ void loop() {
   esp_task_wdt_reset();
   unsigned long now = millis();
 
-  // Allow re-provisioning over USB at any time without a physical reset
+
   checkForWifiResetCommand();
 
-  // Reconnect WiFi if dropped
+
   if (WiFi.status() != WL_CONNECTED) {
     oledShow("WiFi lost", "Reconnecting...");
     if (!connectWiFi()) {
-      // Saved creds no longer work (e.g. router password changed) —
-      // drop into provisioning rather than retrying forever.
+
       Serial.println(F("WiFi reconnect failed 3x — entering provisioning"));
       wifiProvisioning();
     }
