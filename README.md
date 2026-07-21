@@ -1,3 +1,11 @@
+## Disclaimer
+
+The Groq API key shown in the code is not the real one because I don't want people using my API key. If you want to test it, you can get your own free key from console.groq.com/keys
+Also to use the app you need to make an acount in the sign up tab then you can use the app do not do sign in
+The website version is working here
+https://smartschedule.wasmer.app/
+
+---
 # Smart Schedule AI
 
 Smart Schedule AI is a smart calendar project that uses artificial intelligence to make planning easier. Instead of having to manually add every event, users can talk with the AI assistant and tell it what they want to schedule. The AI understands what the user says and creates events, reminders, and appointments automatically.
@@ -6,14 +14,6 @@ This all started becouse I strugle with orgnising and also staying on time and I
 
 I also made a hardware version of Smart Schedule that can show your upcoming events without needing to open your phone. The goal was to make something that is simple, useful, and easy to access during the day so I can do all of my stuff on time.
 
-## Disclaimer
-
-The Groq API key shown in the code is not the real one because I don't want people using my API key. If you want to test it, you can get your own free key from console.groq.com/keys
-
-The website version is working here
-https://smartschedule.wasmer.app/
-
----
 
 # Features
 
