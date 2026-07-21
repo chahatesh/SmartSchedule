@@ -2,7 +2,7 @@
 
 The Groq API key shown in the code is not the real one because I don't want people using my API key. If you want to test it, you can get your own free key from console.groq.com/keys
 
-Also to use the app you need to make an acount in the sign up tab then you can use the app do not do sign in
+Also to use the app you need to make an acount in the sign up tab then you can use the app do not do sign in also here is a vid - https://youtu.be/1DnQlLGZJk8
 The website version is working here
 https://smartschedule.wasmer.app/
 
