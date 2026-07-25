@@ -10,9 +10,9 @@ I also made a hardware version of Smart Schedule that can show upcoming events w
 
 The Groq API key shown in the code is not the real one, because I do not want other people using my API key. If you want to test the project, you can get your own free key from [console.groq.com/keys](https://console.groq.com/keys).
 
-To use the app, you need to make an account in the **Sign Up** tab Or use the demo mode. After that, you can use the app normally.
+To use the app, you need to make an account in the Sign Up tab Or use the **demo** mode. After that, you can use the app normally.
 
-#**Also make sure that you use the voice typing**
+**Also make sure that you use the voice typing**
 
 Video demo: [YouTube](https://youtu.be/1DnQlLGZJk8)
 Website version: [smartschedule.wasmer.app](https://smartschedule.wasmer.app/)
